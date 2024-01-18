@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{MNotes}
+\usepackage{amssymb}
+\usepackage{bussproofs}
+\title{\huge{\textbf{Assignment 5}}}
+\author{\Chi{杨乐天}}
+\date{}
+
+\newcommand \ran[1]							{\text{Ran}\left( #1 \right)}
+\newcommand \logequiv						{\vDash\mathrel{\text{\reflectbox{$\vDash$}}}}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+
+With assignment $s(v_n)=2n$, we know that freely occurring $v_1$ is assigned as $s(v_1)=2=1 \dot+ 1$.
+\begin{itemize}
+\item
+$\vDash_{\mathfrak{N}} \exists v_0, v_0 \dot+ v_0 \dot= v_1[s]$ holds because if we let $v_0=1$, then $v_0 \dot+ v_0 = 1 \dot+ 1 = s(v_1)$.
+\item
+$\vDash_{\mathfrak{N}} \exists v_0, v_0 \dot\times v_0 \dot= v_1[s]$ doesn't hold. If we let $f(x)=x\times x=x^2$ with domain $\mathbb{N}$, we know $f(x)$ is monotonically incremental and one-to-one. Then given $f(1)=1 \dot< s(v_1)$, $s(v_1) \dot< f(2)=4$, and since there isn't any $a\in\mathbb{N}$ such that $1\dot< a$ and $a \dot< 2$, we know the proposition doesn't hold.
+\item
+$\vDash_{\mathfrak{N}} \forall v_0 \exists v_1, v_0 \dot= v_1[s]$ holds. The $v_0$ and $v_1$ here are not occurring free, so the truth value of the statement isn't affected by $s$. For any $a\in\mathbb{N}$, let $b=a\in\mathbb{N}$, then $(v_0\dot= v_1)[s(v_0|a)(v_1|b)]$ holds naturally.
+\item
+$\vDash_{\mathfrak{N}} \forall v_0 \forall v_1, v_0 \dot+ \dot1 \dot< v_1 \to \exists v_2, v_0 \dot< v_2 \land v_2 \dot< v_1[s]$ holds. We have to prove $v_0 \dot+ \dot1 \dot< v_1 \to \exists v_2, v_0 \dot< v_2 \land v_2 \dot< v_1[s(v_0|a)(v_1|b)]$ for every $a,b\in\mathbb{N}$. If the atomic formula $v_0 \dot+ \dot1 \dot< v_1$ is true, then $a+1<b$. In this case, $v_0 \dot< v_2 \land v_2 \dot< v_1[s(v_0|a)(v_1|b)(v_2|c)]$ is true by letting $c=a+1$. Otherwise, if the atomic formula $v_0 \dot+ \dot1 \dot< v_1$ is false, then the original formula holds naturally.
+\end{itemize}
+
+
+
+\section*{Problem 2}
+
+For any structure $\mathfrak{A}$, we have to prove $\vDash_{\mathfrak{A}} \neg\exists x (Px \land Qx) \to \forall x (Qx \to \neg Px)$.
+
+If $\vDash_{\mathfrak{A}} \neg \exists x (Px \land Qx)$, then $\vDash_{\mathfrak{A}} \exists x (Px \land Qx)$ doesn't hold. Further decomposing it, there doesn't exist any $a\in|\mathfrak{A}|$ s.t. $\vDash_{\mathfrak{A}} (Pa \land Qa)$, i.e. for any $a\in|\mathfrak{A}|$, $\vDash_{\mathfrak{A}} Pa$ is false or $\vDash_{\mathfrak{A}} Qa$ is false. Therefore, $\vDash_{\mathfrak{A}} Qa \to \neg Pa$, and thus $\vDash_{\mathfrak{A}} \forall x (Qx \to \neg Pa)$.
+
+
+
+\section*{Problem 3}
+
+A binary relation $R \subset |\mathfrak{A}|^2$ becomes a function iff. for any $a$ there is unique $b$ satisfying $(a,b)\in R$.
+\begin{align*}
+	\forall a \exists b (R(a,b) \land \forall c (c\ne b \to \neg R(a,c)))
+\end{align*}
+
+
+
+\section*{Problem 4}
+
+\begin{itemize}
+\item
+$\phi_1: v_0 \dot\times v_0 \dot= v_0$
+\item
+$\phi_2: (v_0 \dot+ v_0 \dot= v_0 \dot\times v_0) \land \neg(v_0 \dot\times v_0 \dot= v_0)$
+\item
+$\phi_3: \exists x \exists y (\phi_2(y) \land x\dot\times y \dot=v_0)$
+\end{itemize}
+
+\end{document}

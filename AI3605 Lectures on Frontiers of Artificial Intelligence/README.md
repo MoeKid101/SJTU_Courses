@@ -1,0 +1,3 @@
+# SJTU AI3605 Lectures on Frontiers of Artificial Intelligence
+
+In this folder the final essay is provided. The currently most popular image generation models are all based on diffusion models. But why diffusion, given the intuitiveness of GAN and VAE? This question led me to conduct a survey on the mathematical principles of these different generative models. Note that this survey is completely focused on maths, and thus implementation and application are not considered.

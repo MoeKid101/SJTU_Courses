@@ -1,0 +1,89 @@
+\documentclass{article}
+\usepackage{MNotes}
+\title{\huge{\textbf{Assignment 1}}}
+\author{\Chi{杨乐天}}
+\date{}
+
+\newcommand \ran[1]							{\text{Ran}\left( #1 \right)}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+
+\subsection*{1}
+
+Because $A$ is countable, $A$ is either finite or enumerable.
+
+If $A$ is finite, then there exists $n \in \mathbb{N}$ and a bijection $f$ between $\{0,1,...,n\}$ and $A$. We construct the listing $a_0, a_1, ..., a_n, ...$ as follows: $\forall i \in \mathbb{N}$, $a_i=f(i\mod (n+1))$. Then for any $i$, $a_i \in A$ because $\ran{f}=A$; for any $x \in A$, $a_{f^{-1}(x)} = x$, so it is a listing of $A$.
+
+If $A$ is enumerable, then there exists bijection $f$ between $\mathbb{N}$ and $A$. Then the listing $a_0, a_1, ..., a_n, ...$ is defined by $a_i = f(i)$. Because $\ran{f}=A$, for any $i$, $a_i \in A$; $f$ is a surjection so for any $x \in A$ there exists $n \in \mathbb{N}$ s.t. $f(n)=x$, and therefore $a_n=x$. Consequently, $a_0, a_1, ...$ is a listing of $A$.
+
+\subsection*{2}
+
+Suppose $a_0, a_1, ..., a_n, ...$ is a listing of $A$. For any $x \in A$, there exists $n \in \mathbb{N}$ s.t. $a_n=x$. Define $f:A \to \mathbb{N}$ satisfying $f(x) = \min\{ n\in\mathbb{N} | a_n=x\}$. Then $f$ is an injection because $a_n$ is unique for any $n\in \mathbb{N}$.
+
+If $A$ is finite, then $A$ is countable.
+
+If $A$ is infinite, then $\ran{f}$ is an infinite subset of $\mathbb{N}$. We further define $g: \mathbb{N} \to A$ s.t. $g(n)=x$ iff $f(x)$ is the $n$-th smallest element in $\ran{f}$. Then $g$ is obviously injection. $g$ is also surjection because for any $x \in A$, there exists $n$ s.t. $a_n=x$, and therefore there exists $m \le n$ s.t. $f(x)=m$. Therefore there are at most $m$ elements smaller than $f(x)$. In other words, there exists $k \le m$ s.t. $g(k)=x$. Now we conclude that $g$ is a bijection, so $A$ is enumerable, and thus countable.
+
+
+
+\section*{Problem 2}
+
+Let $a_0, a_1,...,a_n, ...$ be a sequence such that $a_i = f(i)$ for any $i\in \mathbb{N}$. We prove that this sequence is a listing of $A$.
+
+\begin{itemize}
+	\item
+	$\forall i \in \mathbb{N}$, $a_i=f(i)\in A$.
+	\item
+	$\forall a \in A$, because $f$ is a surjection, $\exists n \in \mathbb{N}$ s.t. $f(n)=a$. Therefore, there exists $a_n=a$.
+\end{itemize}
+
+Therefore, $a_0, a_1, ..., a_n, ...$ is a listing of $A$. Using the conclusion of problem 1, we know that $A$ is countable.
+
+
+
+\section*{Problem 3}
+
+We prove by induction.
+
+(Base step) Expressions of length $n=1$ are exactly the alphabet, which is enumerable.
+
+(Induction step) Expressions of length $n+1$ can be considered as a combination of two parts: the preceding part with length $n$ and a suffix with length $1$. Mathematically, $S_{n+1}=S_n \times S_1$. As introduced in the class, the Cartesian product of two enumerable sets are also enumerable. Therefore, for any finite $n \in \mathbb{N}^{+}$, if $S_{n}$ is enumerable, then $S_{n+1}$ is enumerable, too.
+
+By induction, we have shown that for any $n\in\mathbb{N}^{+}$, $S_n$ is enumerable.
+
+
+
+\section*{Problem 4}
+
+\subsection*{1}
+
+\begin{equation}
+\left( \left( \neg \left( A_2 \land A_3 \right) \right) \to \left( \neg A_1 \right) \right)
+\end{equation}
+
+Explanation: The sentence is ``not $A_1$ unless $A_2$ and $A_3$'', and ``not $A$ unless $B$'' means as long as $B$ isn't true, $A$ can't be true, which is translated into $\neg B \to \neg A$.
+
+\subsection*{2}
+
+\begin{equation}
+\left( A_1 \to \left( A_2 \lor \left( \neg A_3 \right) \right) \right)
+\end{equation}
+
+Explanation: The sentence is ``if $A_1$ then $A_2$ or not $A_3$'' where ``if ... then ...'' is translated to $(... \to ...)$.
+
+
+
+\section*{Problem 5}
+
+We prove by induction that the length of a wff without negation is $4k-3$ if there are $k$ sentence symbols.
+
+(Base case) For the wff with only one sentence symbol $A$, the only valid wff is the sentence symbol itself, which has length $1=4\times 1-3$.
+
+(Induction step) Assume that $\forall i \le k$, the length of wffs without negation is $4i-3$ if there are $i$ sentence symbols, we consider the case when $i=k+1$. Suppose $\alpha$ is a wff with no negation and $k+1$ sentence symbols, then $\alpha = ( \beta \square \gamma )$ where $\beta$ and $\gamma$ are wffs and $\square$ is one of $\{ \land, \lor, \to, \leftrightarrow \}$. Here the number of the wffs $n_{\beta}$ and $n_{\gamma}$ satisfy $n_{\beta}+n_{\gamma} = k+1$. Because $n_{\beta}$ and $n_{\gamma}$ are positive integers, we know $n_{\beta} \le k$ and $n_{\gamma} \le k$. Therefore, the length of $\alpha$ is $n_{\alpha}=1+(4n_{\beta}-3)+1+(4n_{\gamma}-3)+1=4(n_{\beta}+n_{\gamma})-3=4k-3$.
+
+Then by induction, the length of a wff without negation is $4k-3$ if there are $k$ sentence symbols. Therefore there are more than a quarter sentence symbols.
+
+\end{document}

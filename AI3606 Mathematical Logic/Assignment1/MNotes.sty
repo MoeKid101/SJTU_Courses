@@ -1,0 +1,127 @@
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{MNotes}
+
+\RequirePackage{times}								% Note-like Font
+\RequirePackage{geometry}
+\RequirePackage{amsfonts}
+\RequirePackage{amsmath}
+\RequirePackage{indentfirst}
+\RequirePackage{ulem}								% double underline
+\RequirePackage{bm}									% bold font in equations
+\RequirePackage{xcolor}							% change color of text in equations
+\RequirePackage{extarrows}						% Extended arrows in equations
+\RequirePackage{graphicx}							% Figures
+\RequirePackage{subfig}							% SubFigures
+\RequirePackage{CJK}								% Chinese characters
+\RequirePackage{listings}
+\RequirePackage{inconsolata}						% change listing font to consolas
+
+% Geometric Parameters
+\setlength{\parskip}{2pt}
+\setlength{\parindent}{2em}
+\setlength{\columnsep}{0.8cm}
+\setcounter{page}{1}
+\geometry{left=1.5cm, right=1.5cm, top=1.5cm, bottom=1.5cm}
+
+% my commands
+\newcommand \fig[1]				{Fig.\ref{#1}}
+\newcommand \tab[1]				{Table.\ref{#1}}
+\renewcommand \sec[1]			{Sec.\ref{#1}}
+\newcommand \wrt			{\textit{w.r.t. }}
+\renewcommand \wp			{\textit{w.p. }}
+\newcommand \eg				{\textit{e.g. }}
+\newcommand \Notice[1]		{$\bm{*}$ \textbf{Notice}: #1}
+\newcommand \Missing[1]	{\textbf{Missing : #1}}
+\newcommand \Def[1]			{\noindent\textbf{\uuline{Def} #1:}}
+\newcommand \Lemma[1]		{\noindent\textbf{\uuline{Lemma} #1:}}
+\newcommand \Thm[1]			{\noindent\textbf{\uuline{Thm} #1:}}
+\newcommand \Proof			{\noindent\textbf{\uline{Proof}}:}
+\newcommand \QED			{\noindent\textbf{\uline{Q.E.D.}}}
+\newcommand \argmax			{\mathop{\arg\max}}
+\newcommand \argmin			{\mathop{\arg\min}}
+\newcommand \NumOf[1]		{\#\text{#1}}
+\newcommand \bt[1]			{\textbf{#1}}
+\renewcommand \it[1]		{\textit{#1}}
+\newcommand \Err[1]			{\overline{\text{#1}}}
+\newcommand \Norm[1]		{\Vert #1 \Vert}
+\renewcommand \Pr[1]		{\bt{Pr}\left[ #1 \right]}
+\newcommand \E[1]			{\bt{E}\left[ #1 \right]}
+\newcommand \Chi[1]			{\begin{CJK}{UTF8}{gbsn}#1\end{CJK}}
+\newcommand \D[2]			{\frac{\text{d}#1}{\text{d}#2}}
+\newcommand \DD[2]			{\frac{\text{d}^2}{\text{d}{#2}^2}}
+\renewcommand \P[2]			{\frac{\partial #1}{\partial #2}}
+\newcommand \PP[2]			{\frac{\partial^2 #1}{\partial {#2}^2}}
+\newcommand \inlinecode[1]		{\lstinline[style=inlinestyle]{#1}}
+
+% pseudo code
+\RequirePackage[noend]{algpseudocode}
+\RequirePackage{algorithmicx, algorithm}
+% breakable pseudo-code
+\makeatletter
+\newenvironment{psuCode}
+  {
+   \begin{center}
+     \refstepcounter{algorithm}% New algorithm
+     \hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+     \renewcommand{\caption}[2][\relax]{% Make a new \caption
+       {\raggedright\textbf{\ALG@name~\thealgorithm} ##2\par}%
+       \ifx\relax##1\relax % #1 is \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+       \else % #1 is not \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+       \fi
+       \kern2pt\hrule\kern2pt
+     }
+  }{
+     \kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+   \end{center}
+  }
+\makeatother
+%%% pseudo-code commands
+\newcommand \algUsage[2]	{\State \bt{Target}: #1. \bt{Used When}: #2.}
+\newcommand \Break			{\bt{break}}
+\newcommand \IfLine[2]		{\State \bt{if} #1 \bt{then} #2}
+\newcommand \True			{\bt{true}}
+
+% listings (for code)
+
+\definecolor{codecomment}{RGB}{82, 153, 85}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codekeyword}{RGB}{80, 146, 200}
+\definecolor{codeemph}{RGB}{124, 219, 239}
+\definecolor{backcolour}{RGB}{30,30,30}
+
+\lstdefinestyle{mycodestyle}{
+basicstyle=\ttfamily\scriptsize\color{white},
+emph={self},
+backgroundcolor=\color{backcolour},   
+commentstyle=\color{codecomment},
+keywordstyle=\color{codekeyword},
+numberstyle=\tiny\color{codegray},
+emphstyle=\color{codeemph},
+stringstyle=\color{magenta},
+breakatwhitespace=false,         
+breaklines=true,                 
+captionpos=b,                    
+keepspaces=true,                 
+numbers=left,                    
+numbersep=5pt,     
+showspaces=false,                
+showstringspaces=false,
+showtabs=false,                  
+tabsize=2
+}
+
+\lstdefinestyle{datastyle}{
+numbers=none,
+basicstyle=\ttfamily\tiny,
+backgroundcolor=\color{white},
+mathescape=true,             
+frame=single,
+}
+
+\lstdefinestyle{inlinestyle}{
+basicstyle=\ttfamily\footnotesize,
+}
+
+\lstset{style=mycodestyle}

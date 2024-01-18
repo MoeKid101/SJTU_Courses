@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage{MNotes}
+\usepackage{amssymb}
+\title{\huge{\textbf{Assignment 2}}}
+\author{\Chi{杨乐天}}
+\date{}
+
+\newcommand \ran[1]							{\text{Ran}\left( #1 \right)}
+\newcommand \logequiv						{\vDash\mathrel{\text{\reflectbox{$\vDash$}}}}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+
+\subsection*{1.a}
+
+The satisfying truth assignments are:
+\begin{align*}
+\begin{bmatrix} v(A_1) \\ v(A_2) \\ v(A_3) \end{bmatrix}
+=
+\begin{bmatrix} T \\ T \\ T \end{bmatrix},
+\begin{bmatrix} T \\ F \\ T \end{bmatrix},
+\begin{bmatrix} T \\ T \\ F \end{bmatrix},
+\begin{bmatrix} T \\ F \\ F \end{bmatrix}
+\end{align*}
+
+The reason is that, if $v$ satisfies $\Sigma$, then $v(A_1)=T$. However, given $\bar{v}(A_1)=v(A_1)=T$, we have $\bar{v}(A_2 \to A_1) = (\neg v(A_2)) \lor v(A_1)=T$ and $\bar{v}\left( A_3 \to \left( A_2 \to A_1 \right)\right) = (\neg v(A_3)) \lor \bar{v}(A_2 \to A_1) = T$.
+
+Consequently, $v$ satisfies $\Sigma$ iff $v(A_1)=T$, and thus, the satisfying assignments are exactly those listed above.
+
+\subsection*{1.b}
+
+If $v$ satisfies $\Sigma$, then $v(A_1)=F$ because $\bar{v}(\neg A_1)=T$. We prove by induction that $\forall k \ge 2$, $v(A_k)=T$.
+
+(Base Step) $\bar{v}\left( \neg\left( A_2 \to A_1 \right) \right)=T$, so $v(A_2) \to v(A_1) = F$, and further, $v(A_2)=T$.
+
+(Induction Step) Suppose $\forall i \in [2, k] \cap \mathbb{N}$, $v(A_i)=T$. Then since $\bar{v}\left( \neg \left( A_{k+1} \to A_k \to ... \to A_1 \right) \right)=T$, we know that $v(A_{k+1}) \to \bar{v}\left( A_k \to ... \to A_1 \right) = F$. Because we have assumed that $v$ satisfies $\Sigma$, $\bar{v}\left( \neg \left( A_k \to ... \to A_1 \right)\right)=T$, we have $\bar{v}\left( A_k \to ... \to A_1 \right)=F$. Now we can conclude that $v(A_{k+1})=T$.
+
+By now we have shown a necessary condition to satisfy $\Sigma$. Next we prove that for $v$ satisfying $v(A_1)=F$ and $v(A_k)=T$ for $k\ge 2$, $v$ satisfies $\Sigma$.
+
+$\forall \alpha \in \Sigma$, let $\alpha=\neg\left( A_k \to ... \to A_1 \right)$. Therefore, $\bar{v}(\alpha)=\neg \left( v(A_k) \to ... \to v(A_1) \right) = \neg \left( T\to ... \to T \to F\right) = T$. $v$ satisfies $\Sigma$.
+
+Therefore, $v$ satisfying $v(A_1)=F$ and $v(A_k)=T$ for $k\ge 2$ is the only assignment satisfying $\Sigma$.
+
+
+\section*{Problem 2}
+
+\subsection*{2.a}
+
+If assignment $v$ satisfies that $\bar{v}\left( \left( \left( P \to Q \right) \to P \right) \to P \right)=F$, then $\bar{v}\left( \left( P \to Q \right) \to P\right) = T$ and $v(P)=F$. Stepping further we have $\bar{v}\left( P \to Q \right) = F$. However, from $v(P)=F$ we know that $\bar{v}(P \to Q)=v(P) \to v(Q)=T$, contradiction!
+
+Therefore, there doesn't exists any assignment that makes the expression false, it is a tautology.
+
+\subsection*{2.b}
+
+If assignment $v$ makes the assignment false, then $\bar{v}(A \leftrightarrow B) = T$, so $v(A)=v(B)$, and thus $\bar{v}(A\to B)=\bar{v}(B\to A)=T$. Therefore,
+\begin{align*}
+\bar{v}\left( \neg \left( \left(A\to B\right) \to \neg\left( B\to A\right) \right) \right) = \neg \left( \bar{v}(A \to B) \to \neg \bar{v}\left( B\to A\right) \right) = \neg (T \to F) = T
+\end{align*}
+
+Therefore, there doesn't exists any assignment that makes the expression false, it is a tautology.
+
+\section*{Problem 3}
+
+$\text{KB} = \{ \left( A_1 \land A_2 \right) \to A_3 \}$ and the question is $\alpha = (A_1\to A_3) \lor (A_2\to A_3)$.
+
+Let $v_1$ satisfies that $v_1(A_1)=v_1(A_2)=v_1(A_3)=T$, then $v_1$ satisfies $\text{KB} \cup \{\alpha\}$.
+
+However, if $v_2$ satisfies $\text{KB} \cup \{\neg\alpha\}$, then $\bar{v_2}(\alpha)=F$, then $v_2(A_1)=v_2(A_2)=T$ and $v_2(A_3)=F$, then $\bar{v_2}((A_1 \land A_2) \to A_3)=F$, contradiction.
+
+Therefore, $\text{KB} \cup \{\alpha\}$ is satisfiable and $\text{KB} \cup \{\neg\alpha\}$ isn't satisfiable. Then the answer is true.
+
+\section*{Problem 4}
+
+\noindent Idea explained: we utilize the tool \bt{construction sequence} which states that for any wff $\alpha$, there exists a sequences of wffs $\epsilon_1, \epsilon_2, ..., \epsilon_n$ satisfying that
+\begin{itemize}
+	\item $\epsilon_n = \alpha$.
+	\item $\forall i \le n$, $\epsilon_i$ is a sentence symbol or $\exists j < i$ s.t. $\epsilon_i = (\neg \epsilon_j)$ or $\exists j, k < i$ s.t. $\epsilon_i = (\epsilon_j \square \epsilon_k)$.
+\end{itemize}
+However, we can't directly use it as $\beta$ and $\gamma$ are not sentence symbols. Therefore, we can replace $\beta$ and $\gamma$ in $\alpha$ and $\alpha'$ with another newly defined sentence symbol and obtain the same wff which has the same construction sequence. Then with the same construction sequence, we can use induction to derive tautological equivalence.
+\\
+
+\Lemma {} If $\alpha_1 \logequiv \alpha_2$ and $\beta_1 \logequiv \beta_2$, then $(\neg \alpha_1) \logequiv (\neg \alpha_2)$ and $(\alpha_1 \square \beta_1) \logequiv (\alpha_2 \square \beta_2)$ where $\square \in \{ \to, \leftrightarrow, \land, \lor\}$.
+
+\Proof According to the assumptions, $\forall v$, $\bar{v}(\alpha_1)=\bar{v}(\alpha_2)$ and $\bar{v}(\beta_1)=\bar{v}(\beta_2)$.
+
+Therefore, $\bar{v}(\neg\alpha_1)=\neg \bar{v}(\alpha_1)=\neg \bar{v}(\alpha_2)=\bar{v}(\neg\alpha_2)$,
+
+and $\bar{v}(\alpha_1 \square \beta_1)=\bar{v}(\alpha_1) \square \bar{v}(\beta_1) = \bar{v}(\alpha_2) \square \bar{v}(\beta_2) = \bar{v}(\alpha_2 \square \beta_2)$.
+
+\QED
+
+Suppose the original set of sentence symbols are $\{A_i|i\in\mathbb{N}^{+}\}$. We first replace the occurrences of $\beta$ in $\alpha$ with another sentence symbol $A_0$, resulting in another wff $\delta$. Meanwhile, we replace the occurrences of $\gamma$ in $\alpha'$ with $A_0$ and we will also obtain $\delta$. \textcolor{gray}{(Here $A_0$ satisfies that, none of the symbols $\{A_i|i\in\mathbb{N}\}$ is a finite sequence of other symbols.}
+
+Now assume we have a construction sequence $\epsilon_1, \epsilon_2, ..., \epsilon_n$ ending with $\delta$. Then we define $\epsilon'_1, \epsilon'_2, ..., \epsilon'_n$ by: $\forall i \le n$,
+\begin{itemize}
+	\item $\epsilon'_i = \epsilon_i$ if $\epsilon_i$ is a sentence symbol and $\epsilon_i \ne A_0$.
+	\item $\epsilon'_i = \beta$ if $\epsilon_i = A_0$.
+	\item $\epsilon'_i = (\neg \epsilon'_j)$ if $\epsilon_i = (\neg \epsilon_j)$.
+	\item $\epsilon'_i = (\epsilon'_j \square \epsilon'_k)$ if $\epsilon_i = (\epsilon_j \square \epsilon_k)$.
+\end{itemize}
+
+Then we know that $\epsilon'_n = \alpha$, and we prove below by induction that $\forall \bar{v}(A_0)=\bar{v}(\beta)$, we have $\bar{v}(\delta)=\bar{v}(\alpha)$.
+
+(Base Case) $\bar{v}(\epsilon_1) = \bar{v}(\epsilon'_1)$ because $\epsilon_1$ must be a sentence symbol. If $\epsilon_1 = \epsilon'_1$ then $\bar{v}(\epsilon_1)=\bar{v}(\epsilon'_1)$ naturally holds. If $\epsilon_1 \ne \epsilon'_1$ then $\epsilon_1 = A_0$, $\epsilon'_1=\beta$ and $\bar{v}(\epsilon_1) = \bar{v}(A_0)=\bar{v}(\beta) = \bar{v}(\epsilon'_1)$.
+
+(Induction Step) Assuming $\forall i \le k$, $\bar{v}(\epsilon_i)=\bar{v}(\epsilon'_i)$, we prove that $\bar{v}(\epsilon_{k+1})=\bar{v}(\epsilon'_{k+1})$. If $\epsilon_{k+1}$ is a sentence symbol, then just as the base case, we know $\bar{v}(\epsilon_{k+1})=\bar{v}(\epsilon'_{k+1})$. If $\epsilon_{k+1}=(\neg \epsilon_j)$ or $\epsilon_{k+1} = (\epsilon_j \square \epsilon_l)$, then by applying the lemma and induction assumption, we know that $\bar{v}(\epsilon_{k+1})=\bar{v}(\epsilon'_{k+1})$.
+
+Similarly, we can build another construction sequence ending with $\alpha'$ and prove that $\forall \bar{v}(A_0)=\bar{v}(\gamma)$, we have $\bar{v}(\delta)=\bar{v}(\alpha')$.
+
+Now that we know $\forall v$, $\bar{v}(\gamma) = \bar{v}(\beta)$, we extend $v$ to $v'$ by defining for any $A$ as a sentence symbol, $v'(A)=v(A)$ and $v'(A_0)=\bar{v}(\gamma)=\bar{v}(\beta)$. Therefore, $\bar{v}'(\alpha')=\bar{v}'(\delta)=\bar{v}'(\alpha)$, in other words $\alpha \logequiv \alpha'$.
+
+\section*{Problem 5}
+
+\subsection*{5.a}
+
+\begin{align*}
+(\neg A \land (B \to C)) \to \neg(\neg B \lor C)
+\logequiv (A \lor \neg (\neg B \lor C)) \lor \neg (\neg B \lor C)
+\logequiv A \lor \neg ( \neg B \lor C )
+\end{align*}
+
+\subsection*{5.b}
+
+\begin{align*}
+A \land \neg (D \to (\neg A \land E))
+\logequiv & A \land \neg ( \neg D \lor \neg ( A \lor \neg E ))
+\logequiv \neg ( \neg A \lor ( \neg D \lor \neg ( A \lor \neg E)))
+\\
+\logequiv & \neg ( \neg A \lor \neg D )
+\end{align*}
+
+\section*{Problem 6}
+
+Let $v$ be an assignment such that $\forall \gamma \in \Sigma \cup \Delta$, $v(\gamma)=T$.
+
+Then $\forall \gamma \in \Sigma$, $v(\gamma)=T$, so $v(\alpha)=T$.
+
+Therefore, $\forall \gamma \in \Delta \cup \{\alpha\}$, $v(\gamma)=T$, which means $v(\beta)=T$ according to $\Delta; \alpha \vDash \beta$.
+\end{document}

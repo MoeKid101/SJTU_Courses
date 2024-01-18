@@ -1,0 +1,79 @@
+\documentclass{article}
+\usepackage{MNotes}
+\title{\bt{\huge{Notes for Causal Inference}}}
+\author{MoeKid101}
+\date{}
+
+\newcommand \Prm[1]		{\bt{Pr}_{m} \left[ #1 \right]}
+
+\begin{document}
+\maketitle
+
+\section{Causal Model}
+
+\Def {Exogenous Variables} The set of variables that are determined outside the model and act as the driving force of the model.
+
+\Def {Endogenous Variables} The set of variables that are influenced by other variables inside the model.
+
+\Def {Cause / Direct Cause} $X$ is a cause of $Y$ if $X$ is a direct cause of $Y$ or the cause of any cause of $Y$.
+
+A \bt{structural causal model} (SCM) has two sets of variables, exogeous variables $U$, endogenous variables $V$ and a set of functions $f$ used to determine the values of endogenous variables based on other variables \textcolor{gray}{(when variables in $U$ are determined, $f$ gives all values in $V$)}. Each SCM is associated with a \bt{graphical causal model} represented by a DAG $G=(\mathcal{V}, \mathcal{E})$ where $(X,Y) \in \mathcal{E}$ represents direct causality.
+
+\Thm {The Rule of Product Decomposition} In a graphical causal model $G$, $\Pr{x_1,...,x_n}=\prod_i \Pr{x_i | pa_i}$ where $X_1,...,X_n$ are variable nodes.
+
+An unspecified graphical causal model means we know only the topological structure of the graph, but are ignorant of the specific functions $f$. With only the information given by unspecific graph we can know many causal relationships between variables.
+\begin{itemize}
+	\item
+	$X$ and $Y$ are dependent if $(X,Y)\in\mathcal{E}$ or $(Y,X)\in\mathcal{E}$.
+	\item
+	$X$ and $Y$ are \it{likely} dependent if there exists a path between $X$ and $Y$.
+	\item
+	$X$ and $Y$ are conditionally independent given $Z$ if \bt{(1)} there is only one path between $X$ and $Y$; \bt{(2)} $Z$ intercepts the path.
+	\item
+	$Y$ and $Z$ are independent conditional on $X$ if \bt{(1)} $X$ is a common cause of $Y$ and $Z$; \bt{(2)} there exists only one path between $Y$ and $Z$ in the undirected graph.
+	\item
+	$X$ and $Y$ are unconditionally independent but conditionally dependent given $Z$ or any descendants of $Z$ if \bt{(1)} $Z$ is the collision node between $X$ and $Y$; \bt{(2)} there exists only one path between $X$ and $Y$ in the undirected graph.
+\end{itemize}
+
+With these basic rules dealing with chains, forks and colliders, we can use \bt{$d$-separation} to measure in any graph whether variable nodes are connected (or dependent, termed as \bt{$d$-connected} whose contrary is \bt{$d$-separated}). Notice that being $d$-connected doesn't necessarily mean dependent, but being $d$-separated means independent.
+
+\Def {Blocking}
+	For DAG $G$ and its undirected version $\bar{G}$, a path $p$ in $\bar{G}$ is blocked by a set of nodes $Z$ iff.
+	
+	\bt{(1)} $p$ contains a chain $A\to B\to C$ or a fork $A \leftarrow B \to C$ and $B\in Z$;
+	
+	\bt{(2)} $p$ contains a collider $A \to B \leftarrow C$ and none of $B$ and its descendants are in $Z$.
+
+\Def {$d$-Separated}
+	$X$ and $Y$ are $d$-separated conditional on $Z$ (and thus conditionally independent) if $Z$ blocks every path between $X$ and $Y$ in $\bar{G}$.
+	
+\section{Intervention}
+
+Usually the goal of statistical studies are to study the effect of interventions (through randomized controlled experiments), but such experiments aren't always practical. Intervening on a variable $\Pr{Y=y|do(X=x)}$ and conditioning on a variable $\Pr{Y=y|X=x}$ are different in that intervening changes the system, through which other variables are changed, however in conditioning, we are simply narrowing the focus to a subset of the system. Specifically, intervention changes the graphical causal model while conditioning doesn't.
+
+\Thm {The Causal Effect Rule}
+	Given graph $G$ where $\bm{pa}$ is the set of parents of $X$, then
+	\begin{align*}
+		\Pr{Y=y|do(X=x)} = \sum_{\bm{z}} \Pr{Y=y|X=x,\bm{pa}=\bm{z}} \Pr{\bm{pa}=\bm{z}}
+	\end{align*}
+
+\Proof
+	Notice that when intervention $X=x$ is introduced, the only changes in the causal graph are the deletion of paths from elements of $\bm{pa}$ to $X$, indicating unchanged conditional probabilities in other parts of the graph. Let $\Pr{...}$ be the probabilities in the original graph, and $\Prm{...}$ be the probabilities in the intervened graph. Then
+	\begin{align*}
+		\Pr{Y=y|do(X=x)} =& \Prm{Y=y|X=x} = \sum_{\bm{z}} \Prm{Y=y, \bm{pa}=\bm{z}|X=x}
+		\\
+		=& \sum_{\bm{z}} \Prm{Y=y|X=x, \bm{pa}=\bm{z}} \Prm{\bm{pa}=\bm{z}|X=x}
+		=\sum_{\bm{z}} \Pr{Y=y|X=x,\bm{pa}=\bm{z}} \Pr{\bm{pa}=\bm{z}}
+	\end{align*}
+\QED
+
+Such result helps us generalize the intervention to multiple variables. Recall that $\Pr{X_1,...,X_n}=\prod_i \Pr{X_i|\bm{pa}_i}$ where $\mathcal{V}=\{X_1,...,X_n\}$. When we intervene a set of variables $S \subset \mathcal{V}$ to be $s_i$, we have $\Prm{X_i|\bm{pa}_i} = \begin{cases} \Pr{X_i|\bm{pa}_i}, & X_i \not\in S \\ 1, & X_i \in S \land x_i=s_i \\ 0, & X_i \in S \land x_i \ne s_i\end{cases}$, therefore, as long as the values of intervened variables coincide with intervention values, the product decomposition rule is stated as $\displaystyle \Pr{X_1,...X_n|do(S=s)} = \prod_{i \not\in S} \Pr{ X_i | \bm{pa}_i }$.
+
+Generally, problem arises from the fact that not every represented variable in the causal graph is measurable (from the perspective of reality). Therefore we might rely on other sets of variables than the parents of $X$ to measure the causal effect of $X$ on another variable $Y$.
+
+\Def {The Backdoor Criterion}
+	Given ordered $(X,Y)$ in directed $G$ with undirected $\overline{G}$, a set of variables $Z$ satisfies backdoor criterion relative to $(X,Y)$ if no node in $Z$ is a descendant of $X$ in $G$, and $Z$ blocks every path in $\overline{G}$ between $X$ and $Y$ that contains an arrow into $X$. \textcolor{gray}{(Intuitively, $Z$ blocks all spurious paths (those with arrows into $X$) and creates no new spurious paths (by not including descendants of $X$).)}
+	
+\Thm {}
+	If $Z$ satisfies backdoor criterion relative to $(X,Y)$, then $\Pr{Y=y|do(X=x)} = \sum_{\bm{z}} \Pr{Y=y|X=x,\bm{Z}=\bm{z}} \Pr{\bm{Z}=\bm{z}}$.
+\end{document}

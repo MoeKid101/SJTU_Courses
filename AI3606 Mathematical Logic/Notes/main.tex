@@ -1,0 +1,668 @@
+\documentclass{article}
+\usepackage{MNotes}
+\usepackage{amssymb}
+\usepackage{proof}
+\usepackage{stmaryrd}
+
+\newcommand \mlist[1]				{\left\langle #1 \right\rangle}
+\renewcommand \iff					{\leftrightarrow}
+\newcommand \ran[1]					{\text{rng}\left( #1 \right)}
+\newcommand \dom[1]					{\text{dom}\left( #1 \right)}
+\newcommand \power[1]				{\mathcal{P}\left( #1 \right)}
+\newcommand \logeq					{\vDash\mathrel{\text{\reflectbox{$\vDash$}}}}
+\newcommand \Corollary[1]			{\noindent \bt{\uuline{Corollary} #1}: }
+
+\title{\textbf{\huge{Mathematical Logic}}}
+\author{MoeKid101}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Sentential Logic (Propositional Logic)}
+
+Any logic system requires a formal language containing two parts: one is \bt{syntax} providing symbols and grammars, the other is \bt{semantics} providing meaning to each sentence (in sentential logic, meaning is assigned either true or false). A proof is purely syntactic construct capturing \bt{derivability of facts} provided by \bt{deductive calculi}.
+
+\subsection{Syntax}
+
+The alphabet include $\mlist{(, ), \neg, \land, \lor, \to, \iff}$ as \bt{connective symbols} with fixed interpretations, and $A_1, A_2, ...$ as \bt{sentence symbols}. It's assumed that none of the symbols is a finite sequence of other symbols.
+
+\Def {Expression}
+	An expression is a finite sequence of symbols.
+
+\Def {Well-Formed Formulas}
+	\bt{(1)} a sentence symbol is a \it{wff}; \bt{(2)} if $\alpha$ and $\beta$ are \it{wff}s, then $(\neg \alpha)$, $(\alpha \land \beta)$, $(\alpha \lor \beta)$, $(\alpha \to \beta)$, $(\alpha \iff \beta)$ are \it{wff}s; \bt{(3)} nothing else than what is defined by \bt{(1)} and \bt{(2)} is a \it{wff}.
+	
+	Here \bt{(3)} has an equivalent description. Define $\mathcal{E}_{\neg}(\alpha)=(\neg\alpha)$, $\mathcal{E}_{\land}$, ... for all five connectives. Define a construction sequence $\mlist{\epsilon_1 \sim \epsilon_n}$ satisfying $\forall i \le n$, $\epsilon_i$ is a sentence symbol or $\exists j<i$ s.t. $\epsilon_i=\mathcal{E}_{\neg}(\epsilon_j)$ or $\exists j,k<i$ s.t. $\epsilon_i=\mathcal{E}_{\square}(\epsilon_j,\epsilon_k)$.
+	
+	\Thm {the Induction Principle} Suppose $S$ is the set of \it{wff}s containing all sentence symbols and is closed under the building operations, then $S$ is the set of all \it{wff}s.
+	
+	\Proof
+	$\forall \alpha$ as a \it{wff}, $\exists \mlist{\epsilon_1\sim\epsilon_n}$ s.t. $\alpha=\epsilon_n$. By numerical induction, we conclude that $\forall i \le n, \epsilon_i$ is a \it{wff}.
+	
+\subsubsection{Natural Deduction}
+
+Natural deduction assumes a set of \it{wff}s called logical axioms and a set of inference rules. We utilize these rules to generate a new set of \it{wff}s called \bt{provable \it{wff}s}.
+
+Logical axioms include only \bt{the Law of Excluded Middle} (LEM): For any \it{wff} $\alpha$, $\alpha \lor \neg\alpha$ is a tautology. Inference rules include introduction rules (where sentential connectives are introduced) and elimination rules (where sentential connectives are eliminated).
+
+Rules of conjunction:
+	\quad \infer[\land\text{-I}]{\alpha\land\beta}{\alpha & \beta},
+	\quad \infer[\land\text{-E}_1]{\alpha} {\alpha \land \beta},
+	\quad \infer[\land\text{-E}_2]{\beta} {\alpha \land \beta}.
+
+Rules of disjunction:
+	\quad \infer[\lor\text{-I}_1] {\alpha \lor \beta} {\alpha},
+	\quad \infer[\lor\text{-I}_2] {\alpha \lor \beta} {\beta},
+	\quad \infer[\lor\text{-E}] {\delta} {\alpha \lor \beta & \infer*{\delta}{[\alpha]} & \infer*{\delta}{[\beta]}}.
+
+Rules of implication:
+	\quad \infer[\to\text{-I}] {\alpha\to\beta} {\infer*{\beta}{[\alpha]}},
+	\quad \infer[\to\text{-E}] {\beta} {\alpha\to\beta & \alpha}.
+
+Rules of negation:
+	\quad \infer[\neg\text{-I}] {\neg\alpha} {\infer*{\beta \land \neg\beta}{[\alpha]}},
+	\quad \infer[\neg\text{-E}] {\alpha} {\beta & \neg\beta}. (Notice that negation introduction is prove contradiction by assuming $\alpha$ and conclude $\neg\alpha$, while proof by contradiction is prove contradiction by assuming $\neg\alpha$ and conclude $\alpha$.
+
+Rules of if-and-only-if:
+	\quad \infer[\iff\text{-I}] {\alpha\iff\beta} {\alpha\to\beta & \beta\to\alpha},
+	\quad \infer[\iff\text{-E}_1] {\alpha\to\beta} {\alpha\iff\beta},
+	\quad \infer[\iff\text{-E}_2] {\beta\to\alpha} {\alpha\iff\beta}.
+	
+\Def {Proof Tree}
+	A proof tree for \it{wff} $\alpha$ is constructed by applying inference rules for finite amount of times until all assumptions are discharged. In other words, all leaf nodes are either $[\sigma]$ (discharged assumption) or $\{\sigma\}$ (axiom).
+	
+\Def {Partial Proof Tree}
+	A partial proof tree for $\alpha$ is a proof tree with some leaves $\beta_1, ..., \beta_n$ being neither axioms nor discharged assumptions.
+
+\Thm {}
+	Axiom LEM ($\alpha \lor \neg\alpha$) is equivalent to axiom $\neg\neg\alpha \to \alpha$.
+
+\Proof
+	Use proof trees.
+	
+	$$ \infer[\to\text{-I}] {\neg\neg\alpha \to \alpha} {\infer[\lor\text{-E}] {\alpha} {\alpha \lor \neg\alpha & \infer[\neg\text{-E}] {\alpha} {[\neg\alpha] & [\neg\neg\alpha]} & [\alpha]} } $$
+	
+	For the other side, we let $\beta=(\alpha\lor\neg\alpha)$.
+	
+	$$ \infer[\to\text{-E}] {\alpha \lor \neg\alpha} {\neg\neg\beta \to \beta & \infer[\neg\text{-E}] {\neg\neg\beta} {\infer[\neg\text{-E}] {\neg\alpha} {\infer[\lor\text{-I}] {\alpha\lor\neg\alpha} {[\alpha]} & [\neg\beta]} & \infer[\neg\text{-E}] {\neg\neg\alpha} {\infer[\lor\text{-I}] {\alpha\lor\neg\alpha} {[\neg\alpha]} & [\neg\beta]} } }$$
+
+
+\QED
+
+\Def {Provable From Assumptions}
+	$\alpha$ is provable from a set of assumptions $\Sigma$ if there exists partial proof tree for $\alpha$ whose undischarged assumptions are in $\Sigma$ (denoted by $\Sigma \vdash \alpha$). \infer= {\alpha} {\beta_1 & ... & \beta_n} is a derived rule if $\{\beta_1,...,\beta_n\} \vdash \alpha$.
+	
+\Def {Provable}
+	$\alpha$ is provable if $\varnothing \vdash \alpha$ (or $\vdash \alpha$).
+
+
+
+\subsection{Semantics}
+
+\Def {Truth Values}
+	$T$ for truth and $F$ for falsity.
+
+\Def {Truth Assignment}
+	$v:\mathcal{S} \to \{F, T\}$ where $\mathcal{S}$ is a set of sentence symbols. The extended version is $\bar{v}:\bar{\mathcal{S}} \to \{F, T\}$ where $\bar{\mathcal{S}}$ is the set of \it{wff}s whose sentence symbols belong to $\mathcal{S}$. $\bar{v}$ satisfies that:
+	
+	$\bar{v}(\alpha)=v(\alpha)$ for any $\alpha\in\mathcal{S}$;
+	$\bar{v}((\neg\alpha))=\begin{cases}T, & \bar{v}(\alpha)=F \\ F, &\bar{v}(\alpha)=T\end{cases}$;
+	$\bar{v}((\alpha \land \beta)) = \begin{cases}T, & \bar{v}(\alpha)=T \text{ and } \bar{v}(\beta)=T \\ F, & \text{otherwise}\end{cases}$; ...
+	
+\Thm {}
+	For any $v:\mathcal{S}\to\{T,F\}$, there exists unique $\bar{v}:\bar{\mathcal{S}}\to\{T,F\}$ satisfying the construction rules.
+	
+\Proof Suppose $\bar{v}_1 \ne \bar{v}_2$ both satisfy, then $\exists x \in \bar{S}$ s.t. $\bar{v}_1(x) \ne \bar{v}_2(x)$. Since $x$ is the ending of $\mlist{x_0\sim x_n}$, by induction we know $\bar{v}_1(x_n)=\bar{v}_2(x_n)$, contradiction!
+
+Suppose there exists conflict, i.e. there exists two different sequences leading to different truth values. However, applying the fact that no symbol is a combination of another sequence of symbols, the formula-building operations have disjoint ranges and are one-to-one, so there is no two different construction sequences for a single expression.
+	
+\Def {Satisfy}
+	A truth assignment $v$ satisfies $\phi$ iff. $\bar{v}(\phi)=T$.
+
+\Def {Imply}
+	For a set of \it{wff}s $\Sigma$ and another \it{wff} $\tau$, we say $\Sigma \vDash \tau$ iff. any truth assignment satisfying all of $\Sigma$ also satisfies $\tau$.
+	
+\Def {Tautological Equivalence}
+	$\alpha$ and $\beta$ are tautological equivalent if $\alpha \vDash \beta$ and $\beta \vDash \alpha$ hold (denoted by $\alpha \logeq \beta$.
+
+\Def {Tautology}
+	$\tau$ is a tautology iff. $\varnothing \vDash \tau$.
+
+\Thm {Compactness Theorem}
+	Suppose an infinite set of \it{wff}s $\Sigma$. If any finite subset $\Sigma_0$ of $\Sigma$ is satisfiable, then $\Sigma$ is satisfiable.
+	
+\Proof
+	We extend the set $\Sigma$ to a maximal finitely satisfiable set $\Delta$ (observe that $\bigcup \{\Delta_n|n \in \mathbb{N}\}$ is finitely satisfiable as long as $\Delta_n$'s are finitely satisfiable) and then use $\Delta$ to construct a truth assignment.
+	
+	Let $\mlist{\alpha_1, \alpha_2,...}$ be an enumeration of \it{wff}s, $\Delta_0=\Sigma$ and $\Delta_{n+1}$ is the finitely satisfiable one among $\Delta_n \cup \{\alpha_{n+1}\}$ and $\Delta_n \cup \{(\neg\alpha_{n+1})\}$. Then $\Delta=\bigcup \{\Delta_n|n \in \mathbb{N}\}$ is finitely satisfiable. Then we define $v(A)=T$ iff. $A\in\Delta$, which is a valid assignment.
+	
+\Thm {}
+	If $\Sigma \vDash \alpha$, then there exists finite $\Delta \subseteq \Sigma$ s.t. $\Delta \vDash \alpha$.
+
+\Proof
+	Notice that $\Sigma \vDash \alpha$ is equivalent to $\Sigma; \neg\alpha$ is unsatisfiable. Assume that $\forall \Delta \subseteq \Sigma$, $\Delta \not\vDash \alpha$, then $\Delta; \neg\alpha$ is satisfiable. Consequently, $\Sigma; \neg\alpha$ is finitely satisfiable, then $\Sigma \not\vDash \alpha$.
+\\
+
+\noindent \bt{\uuline{Practice}}: Suppose two propositions: (1) $\varnothing \vDash \alpha \Longrightarrow \varnothing \vDash \beta$, (2) $\varnothing \vDash \alpha \to \beta$, then (2) implies (1) while (1) doesn't imply (2).
+
+\Proof
+	(1) poses very strong restriction on $\alpha$ itself, while (2) doesn't. Therefore, (1) is true only when $\alpha$ takes a very small set of values, which explains why it doesn't imply (2) where no constraint on $\alpha$ is set.
+	
+	$\Sigma \vDash \alpha$ is equivalent to $\forall v$, $\left( \forall \sigma \in \Sigma, v(\sigma)=T \right) \to v(\alpha)=T$. Consequently, (1) is equivalent to $\left( \forall v_1, v_1(\alpha)=T \right) \to \left( \forall v_2, v_2(\beta)=T \right)$, while (2) is equivalent to $\forall v, v(\alpha)=T \to v(\beta) = T$.
+	
+	Then (2) implies (1) because if we let $\forall v, v(\alpha)=T \to v(\beta) = T$ and $\forall v_1, v_1(\alpha)=T$, we naturally concludes $\forall v_2, v_2(\beta)=T$. The opposite side doesn't hold because (1) poses a strong restriction on the selection of $\alpha$, while (2) doesn't. The given information isn't enough to obtain 
+	
+
+
+\subsection{Principles}
+
+Now there are two derived propositions from our definitions given above: \bt{the induction principle} and \bt{uniqueness of $\bar{v}$ given $v$}. Note that set theory is not introduced so the ``proof''s are not really valid proof to the principles, but only a vague idea on why these principles are true.
+
+\subsubsection{The Induction Principle}
+
+The induction principle is a concrete example of constructing a subset $S$ of $U$ with some initial elements $B$ and constantly applying certain operations. Such principle states that a top-down method for definition (the smallest inductive subsets) is equivalent to a bottom-up definition (construction sequence approach). It can be proved now restricting the valid operations to $\mathcal{F}=\{f,g\}$ with $f:U\times U \to U$ and $g:U\to U$.
+
+\Proof (of equivalence of definitions)
+
+Define closed subset as:
+	$S \subset U$ is closed under $\{f,g\}$ iff. $\forall x,y\in S$, $f(x,y), g(x)\in S$.
+	
+Define inductive subset as:
+	$S \subset U$ is inductive iff. $B \subset S$ and $S$ is closed under $\{f,g\}$.
+	
+	Then the top-down method defines $C^*= \bigcap \{ S\subset U | S \text{ is inductive}\}$.
+	
+Define construction sequence as $\mlist{x_1\sim x_n}$ where $\forall i \le n$, either \bt{(1)} $x_i \in B$, \bt{(2)} $\exists j, k<i$ s.t. $x_i=f(x_j,x_k)$, or \bt{(3)} $\exists j<i$ s.t. $x_i = g(x_j)$.
+
+	Then the bottom-up method defines $C_*=\{ x \in U | \exists \mlist{x_1\sim x_n} \text{ s.t. } x_n=x\}$. If we define $C_n$ as the set of $x$ corresponding to the end of a length-$n$ construction sequence, then $C_n \subseteq C_{n+1}$ and $C_* = \bigcup \{C_n | n \in \mathbb{N}\}$.
+	
+	With $C^*$ and $C_*$ defined, we know $C_*$ is closed because: $\forall x \in C_k, y \in C_l$ (suppose $l>k$), $g(x) \in C_{k+1}$ and $f(x,y) \in C_{l+1}$. Accompanied by $B=C_1$, we know $B\subset C_*$ so $C_*$ is inductive, and thus $C^* \subset C_*$. Symmetrically, any $x\in C_*$ is the ending of $\mlist{x_0\sim x_n}$. By induction, $x \in C^*$ and therefore $C_* \subset C^*$.
+	
+\QED
+
+Having concluded $C^*=C_*$, we know:
+
+\Def {Generated Subset}
+	$C$ is the subset of $U$ generated from $B$ by $\mathcal{F}$ iff. (1) $C$ is the smallest inductive subset from $B$, or (2) $C$ is the set of elements reachable from finite construction sequence.
+
+\Thm {the Induction Principle}
+	Suppose $C$ is the set generated from $B$ by $\mathcal{F}$, and $S \subset C$ satisfies: (1) $S$ is closed under $\mathcal{F}$, (2) $B \subset S$, then $S=C$.
+	
+
+\subsubsection{The Recursion Principle}
+
+This principle states the uniqueness of $\bar{v}$ given $v$.
+
+\Def {Freely Generated}
+	For $C$ generated from $B$ by $\{f, g\}$, we say $C$ is freely generated iff. (1) $f_C$ and $g_C$ are one-to-one, (2) $\ran{f_C}$, $\ran{g_C}$ and $B$ are pairwise disjoint.
+	
+\Thm {Recursion Theorem}
+	Suppose $C$ is freely generated from $B$ by $\{f, g\}$, $V$ is a set and $h:B\to V$, $F:V\times V\to V$, $G:V\to V$. Then there exists unique function $\bar{h}:C\to V$ s.t. (1) $\forall x \in B$, $\bar{h}(x)=h(x)$. (2) $\forall x,y \in C$, $\bar{h}\left( f(x,y) \right)=F \left( \bar{h}(x), \bar{h}(y) \right)$, and $\bar{h}(g(x))=G \left( \bar{h}(x) \right)$.
+
+\Proof
+	For finite sets, it's directly provable using the bottom-up approach, defining the values using construction sequences. However, for infinite sets, the top-down approach is required.
+	
+	We define a function $v$ as \it{acceptable} if it satisfies (1) and (2) (but is not necessarily generated from $B$). Let the set of acceptable functions to be $K$, then the targetted $\bar{h}$ is constructed by $\bar{h}=\bigcup K$.
+	
+	First we prove the binary-relation $\bar{h}$ is singled-valued, and thus a function. Define $S=\{x\in C| \text{acceptable functions agree at }x\}$. Then $B \subset S$ and $S$ is inductive. Therefore, using the induction principle, $S=C$. Consequently, $\bar{h}$ is a single-valued function.
+	
+	Next we prove $\bar{h}\in K$. Since $\forall x\in B$, there exists some $v \in K$ defined on $x$ and $\bar{h}(x)$ agrees with $v(x)$, we know $\bar{h}(x)=v(x)=h(x)$. Similarly, for $f$ and $g$, we can also find $v \in K$ to bridge equality between $\bar{h}(f(x,y))$ and $F \left( \bar{h}(x), \bar{h}(y) \right)$.
+	
+	Third we prove $\bar{h}$ covers all elements in $C$, or equivalently $\dom{\bar{h}}$ is inductive. $\forall x \in B$, $\{ \left( x, \bar{h}(x) \right) \}$ is acceptable (not trivial!), so $B \subset \dom{\bar{h}}$. For closedness under $f$, we add $f(s,t) \not\in \dom{\bar{h}}$ to $\dom{\bar{h}}$ if it doesn't and rename $\bar{h}$ to $v$. Since $f(s,t) \not\in B$, $v$ satisfies (1); $\forall f(x,y) \in \dom{v}$, either $f(x,y) \in \dom{\bar{h}}$ (satisfying (2)) or $f(x,y)=f(s,t)$, so $x=s \in \dom{\bar{h}}, y=t \in \dom{\bar{h}}$ and by $\bar{h} \in K$ we know $v(f(s,t))=F(v(s),v(t))$. The closedness under $g$ holds with similar proof. Therefore, $v$ is acceptable, $v\in K$, i.e. $v \subset \bar{h}$. This means $\dom{\bar{h}}$ is inductive.
+	
+	Finally, such $\bar{h}$ is unique because: assuming $\bar{h}_1 \ne \bar{h}_2$, let $S=\{x \in C| \bar{h}_1(x)=\bar{h}_2(x)\}$, we can conclude that $S$ is inductive, and thus $S=C$, $\bar{h}_1=\bar{h}_2$.
+
+\QED
+
+
+
+\subsection{Properties of a Deductive Calculus}
+
+\Def {Soundness}
+	Soundness holds if every provable \it{wff} is a tautology.
+	
+\Def {Completeness}
+	Completeness holds if every tautology is provable.
+
+\Def {Consistency}
+	Consistency holds if for any \it{wff} $\alpha$, $\vdash \alpha$ and $\vdash \neg\alpha$ don't hold together.
+
+\Thm {Soundness of Natural Deduction}
+	$\forall \Sigma, \alpha$, if $\Sigma \vdash \alpha$ then $\Sigma \vDash \alpha$.
+	
+\Proof
+	Induction on the height of proof tree.
+	
+	\bt{(Base case, height $=0$)} $\Sigma \vdash \alpha$ with zero proof tree height implies that either $\alpha \in \Sigma$ or $\alpha$ is null-provable. If $\alpha \in \Sigma$, then $\Sigma \vDash \alpha$. If $\alpha = \beta \lor \neg\beta$, then for any $v$ satisfying $\Sigma$, we have $\bar{v}(\beta \lor\neg\beta)=\bar{v}(\beta) \lor \neg \bar{v}(\neg\beta) = T$.
+	
+	\bt{(Induction step)} We iterate through all possible inference rules. Take several examples.
+	
+		\bt{(1)} $\alpha$ is provable with the last layer using introduction rule of $\land$. Therefore, $\alpha = \alpha_1 \land \alpha_2$ where $\alpha_1$ and $\alpha_2$ are provable within height $h-1$. Then by induction hypothesis, $\Sigma \vDash \alpha_1, \alpha_2$, i.e. $\forall v$ satisfying $\Sigma$, $\bar{v}(\alpha_1)=\bar{v}(\alpha_2)=T$. Therefore, $\bar{v}(\alpha)=\bar{v}(\alpha_1) \land \bar{v}(\alpha_2)=T$.
+		
+		\bt{(2)} $\alpha$ is provable with the last layer using introduction rule of $\to$. Therefore, $\alpha = (\alpha_1 \to \alpha_2)$. Since $\Sigma \vdash (\alpha_1 \to \alpha_2)$ within height $h$, we know $\Sigma, \alpha_1 \vdash \alpha_2$ within height $h-1$. Then $\Sigma, \alpha_1 \vDash \alpha_2$, i.e. $\forall v$ satisfying $\Sigma \cup \{\alpha_1\}$, $\bar{v}(\alpha_2)=T$. Therefore, $\forall v$ satisfying $\Sigma$, we have $\bar{v}(\alpha_1 \to \alpha_2) = \bar{v}(\alpha_1) \to \bar{v}(\alpha_2) = T$.
+		
+		\bt{(3)} $\alpha$ is provable with the last layer using elimination rule of $\lor$. Therefore, $\Sigma \vdash \beta \lor \gamma$ and $\Sigma, \beta \vdash \alpha$ and $\Sigma, \gamma \vdash \alpha$, all within height $h-1$. Similarly, we can derive $\Sigma \vDash \alpha$.
+
+\QED
+
+With soundness of natural deduction we know that proofs to false \it{wff}s don't exist, and provable \it{wff}s are tautologies.
+
+\Thm {}
+	Given \it{wff} $\alpha$, let $A_1, A_2,...,A_n$ be the sentence symbols occurring in $\alpha$. Let $I$ be a row in the truth table of $\alpha$, and $\hat{A}_i = \begin{cases} A_i, & \text{value of } A_i \text{ in } I \text{ is } T \\ \neg A_i, & \text{value of } A_i \text{ in } I \text{ is } F \end{cases}$. Then $\hat{A}_1, ..., \hat{A}_n \vdash \alpha$ if value of $\alpha$ in $I$ is $T$, while $\hat{A}_1,...,\hat{A}_n \vdash \neg \alpha$ if value of $\alpha$ in $I$ is $F$.
+	
+\Proof
+	Induction on $\alpha$. Base case is $\alpha = A_i$. Then $\alpha \in \hat{A}_i$ if $A_i=T$ in $I$ and $\neg\alpha \in \hat{A}_i$ if $A_i=F$ in $I$.
+	
+	Inductive step is breaking the construction of $\alpha$. If $\alpha = \neg \beta$, then by induction assumption, $\hat{A}_1,...,\hat{A}_n \vdash \beta$ if value of $\beta$ in $I$ is $T$, i.e. $\bar{v}(\beta)=T$, and $\bar{v}(\alpha)=F$. Then we will only have to prove $\hat{A}_1, ..., \hat{A}_n \vdash \neg\neg\beta$.
+\begin{align*}
+	\infer[\neg\text{-I}] {\neg\neg\beta} {[\neg\beta] & \infer={\beta} {\hat{A}_1,...,\hat{A}_n} }
+\end{align*}
+Symmetrically, we can also prove $\hat{A}_1,...,\hat{A}_n \vdash \alpha$ when $\alpha=\neg\beta$ and value of $\beta$ is $F$ in $I$. Similarly, we can prove the conclusion for other logical connectives.
+	
+\QED
+
+\Thm {Completeness of Natural Deduction}
+	$\forall \Sigma, \alpha$, if $\Sigma \vDash \alpha$ then $\Sigma \vdash \alpha$.
+
+\Proof
+	We first prove that $\vDash \alpha \Rightarrow \vdash \alpha$, and assuming $\Sigma = \{ \sigma_1,...,\sigma_n \}$, we can transfer the problem to proving $\vdash \beta_1 \to ... \to \beta_n \to \alpha$.
+	
+	Let $A_1,...,A_n$ be sentence symbols in $\alpha$. $\vDash \alpha$ implies that for every line (of the $2^n$ lines) we have $\hat{A}_1,...,\hat{A}_n \vdash \alpha$ according to the previous theorem. Repeatedly applying $\lor$ elimination we get $\vdash \alpha$.
+	
+\QED
+
+
+\section{Set Theory}
+
+Use $a \in A$ to describe any element $a$ belongs to set $A$. With this symbol and logical operators, $\varnothing, \cap, \cup, \subset$ are defined.
+
+\Def {Ordered Pair}
+	$(a_1,a_2,...)=\left\{ \{a_1\}, \{a_1,a_2\}, ... \right\}$.
+	
+\Def {Cartesian Product}
+	$A_1\times A_2 \times ... = \{(a_1,a_2,...)| a_1\in A_1, a_2\in A_2,...\}$.
+
+\Def {Relation}
+	An $n$-ary relation $R$ is a subset of $A_1\times A_2 \times ... \times A_n$. For binary relation $R \subseteq X \times Y$, we define $\dom{R}=\{x\in X | \exists y \text{ s.t. } (x,y) \in R\}$; $\ran{R}=\{y\in Y| \exists x \text{ s.t. } (x,y) \in R\}$.
+
+\Def {Reflexive, Symmetric, Transitive}
+	$R \subseteq A^2$ is reflexive iff. $\forall x \in A, (x,x) \in R$; symmetric iff. $\forall (x,y) \in R, (y,x)\in R$; transitive iff. $\forall (x,y) \in R \land (y,z) \in R, (x,z)\in R$.
+
+\Def {Function}
+	Denoted $f:A\to B$, $f \subseteq A\times B$ is a binary relation iff. $\forall x \in A, \exists! y \in B$ s.t. $(x,y)\in f$.
+
+\Def {One-to-One (Injective), Onto (Surjective), One-to-One Correspondence (Bijective)}
+	$f:A\to B$ is injective if $\forall f(x)=f(y)$, $x=y$; surjective if $\forall y \in B$, $\exists x \in A$ s.t. $f(x)=y$; bijective if both injective and surjective.
+
+\Def {Natural Numbers}
+	Define $0=\varnothing$, $n=(n-1) \cup \{ n-1 \}$.
+\Def {Inductive Set}
+	A set $A$ is inductive iff. $\varnothing \in A \land \forall x\in A, x \cup \{x\} \in A$.
+\Def {the Set of Natural Numbers}
+	The smallest inductive set.
+
+\Def {Finite}
+	$X$ is finite iff. $\exists n \in \mathbb{N}$ and there exists a bijection between $X$ and $\{0,1,...,n\}$.
+
+\Def {Enumerable}
+	$X$ is enumerable iff. there exists a bijection between $X$ and $\mathbb{N}$.
+
+\Def {Countable}
+	$X$ is countable if $X$ is finite or enumerable.
+
+\Def {Listing}
+	Suppose $A$ is a set, then $\mlist{a_0,a_1,...}$ is a listing of $A$ iff. (1) $\forall i \in \mathbb{N}$, $a_i \in A$, (2) $\forall a \in A$, $\exists n\in \mathbb{N}$ s.t. $a_n=a$.
+
+\Thm {}
+	$A$ is enumerable iff. there exists some listing of $A$ with no repetition.
+
+\Thm {}
+	$A$ is countable iff. there exists an injection from $A$ to $\mathbb{N}$.
+
+\Thm {}
+	$A$ is countable and nonempty iff. there exists some listing with possible repetitions of $A$.
+
+\Thm {}
+	If $A$ is countable and non-empty, then the set of all finite sequences of members of $A$ is countable.
+
+\Proof
+	If $A$ is finite, then there are finite sequences, countable. Now consider infinite $A$ (therefore enumerable).
+	
+	Enumerable $A$ has a bijection $f$ to $\mathbb{N}$. Then the sequence $\mlist{a_{n_1}\sim a_{n_k}}$ is mapped to $p_{n_1}^{1}...p_{n_k}^{k}$ where $p_n$ is the $n$-th prime number.
+
+\Def {Power Set}
+	$\power{A} = \{ X| X \subseteq A\}$. Then $\power{\mathbb{N}}$ and $\mathbb{R}$ uncountable.
+
+\Def {Domination of Sets}
+	$A \preceq B$ iff. there exists injection from $A$ to $B$; $A \approx B$ iff. $A \preceq B$ and $B \preceq A$.
+
+\Thm {Cantor-Schr\"oder-Bernstein}
+	$A \approx B$ iff. there exists bijection between $A$ and $B$.
+
+\Proof
+	Suppose $f:A\to B$ and $g:B\to A$ are injections. Then let $B_0=B \setminus f(A)$, $A_0=g(B_0)=g(B \setminus f(A))$, then $A_0$ and $B_0$ is one-to-one correspondent. The remaining part is $f_0:(A \setminus A_0)\to (B \setminus B_0)$, $g_0:(B \setminus B_0)\to (A \setminus A_0)$, also injections. Then inductively define $A_n$ and $B_n$, we can construct a bijection by: $h(b)=\begin{cases}g(b), & b \in \bigcup \{B_n|n\in\mathbb{N}\} \\ a \text{ s.t. } f(a)=b, & \text{Otherwise}\end{cases}$.
+
+\Thm {Cantor's Theorem}
+	For any set $A$, $A \prec \power{A}$.
+
+\Proof
+	Suppose $\forall X \in \power{A}$, $\exists x \in A$ s.t. $f(x) = X$. Let $S=\{x\in A| x \not\in f(x)\} \subseteq A$. Because $S \in \power{A}$, $\exists s\in A$ s.t. $f(s)=S$. This leads to contradiction between $s\in S$ and $s \not\in S$.
+
+\Def {Set of Mappings}
+	For set $A$, $B$, let $A\to B=B^A$ be the set of functions from $A$ to $B$.
+
+\eg There exists one-to-one correspondence between $A^{\{0,1\}}$ and $\power{A}$.
+
+
+
+\section{First-Order Logic}
+
+First-order logic is introduced by the failure of sentential logic of encoding ``all men are mortal'' and ``Socrates is a man'' into sentence symbols and deducing ``Socrates is mortal''.
+
+
+
+\subsection{Syntax}
+
+Two types of symbols: 
+
+\Def {Logical Symbols}
+	``(`' and ``)'', logical connectives, variables ($v_1, ..., v_n$) and identity/equality symbol ``=''.
+	
+\Def {Parameters}
+	``$\forall$'' (universal quantifier), ``$\exists$'' (existential quantifier), $n$-ary predicate symbols (\eg ``$=$'' is a $2$-ary predicate symbol), $n$-ary function symbols (\eg ``$+$'' is a 2-ary function symbol), and constant symbols.
+	
+\eg ``If a student takes the math logic course and a concept is taught in this course, then the student knows it.'' is translated to $\forall x \forall y (\text{Student}(x) \land \text{Takes}(x, \text{MathLogic}) \land \text{Concept}(y) \land \text{Taught}(y, \text{MathLogic}) \to \text{Knows}(x,y))$ where MathLogic is constant symbol.
+
+\Def {Term}
+	An expression built from constant symbols and variables by applying finite times of term-building operations.
+	
+\Def {Term-Building Operation}
+	Given $n$-ary function symbol $f$, term-building operation $\mathcal{F}_f$ is defined by $\mathcal{F}_f(\sigma_1,...,\sigma_n) = f(\sigma_1,...,\sigma_n)$.
+
+\eg $g(f(c_1,c_2),v_3,c_1)$ is a term.
+
+\Def {Atomic Formula}
+	An expression is atomic formula if it is $P(t_1,...,t_n)$ where $t_1,...,t_n$ are terms and $P$ is $n$-ary predicate symbol.
+
+	\eg $v_7=v_3$ is atomic formula whose real form is $=(v_7, v_3)$.
+
+\Def {Well-Formed Formula}
+	\it{wff} is an expression built from atomic formulas by applying finite times of formula-building operations.
+
+\Def {Formula-Building Operations}
+	$\xi_{\neg} (\alpha) = (\neg \alpha)$, $\xi_{\square}(\alpha, \beta) = (\alpha \square \beta)$, $\mathcal{Q}_i(\gamma) = \forall v_i \gamma$, $\mathcal{P}_i (\gamma) = \exists v_i \gamma$.
+	
+	\eg $(\neg \forall v_3 =(v_1,v_2))$ is a \it{wff}.
+
+
+
+\subsubsection{Natural Deduction for First-Order Logic}
+
+Axioms still include LEM, and all rules in sentential logic still applies.
+
+\Def {Free Occurrence}
+	$x$ occurs free in atomic formula $\phi$ if it occurs in $\phi$. It occurs free in $\neg\alpha$ if it does in $\alpha$; in $\alpha\in\beta$ if in $\alpha$ or in $\beta$; in $\forall y, \alpha$ and $\exists y, \alpha$ if in $\alpha$ and $x \ne y$.
+
+\Def {Sentence}
+	$\alpha$ is a sentence if there is no variable occurring free in $\alpha$.
+
+\Def {Substitution of Terms}
+	Suppose $u$ is a term, $x$ is a variable, and $t$ is a term. $u_t^x$ is the result of replacing every occurrence of $x$ in $u$ by $t$.
+
+\eg Let $\mathbb{L}$ be a language with $f(\cdot)$ and $g(\cdot,\cdot)$ and constant $c$. $u=g(f(c),x)$, $t=g(c,x)$ then $u_t^x = g(f(c), g(c,x))$.
+
+\Def {Substituion of Formulas}
+	For a \it{wff} $\alpha$, variable $x$ and term $t$.
+	
+		\bt{(1)} If $\alpha=P(u_1,...,u_n)$ is atomic, then $\alpha_t^x=P({u_1}_t^x, ..., {u_n}_t^x)$.
+
+		\bt{(2)} If $\alpha = (\neg \beta)$ then $\alpha_t^x = (\neg\beta_t^x)$.
+
+		\bt{(3)} If $\alpha=(\beta\square\gamma)$ then $\alpha_t^x = (\beta_t^x \square \gamma_t^x)$.
+
+		\bt{(4)} If $\alpha=(\forall y, \beta)$ or $\alpha=(\exists y, \beta)$ then $\alpha_t^x = \begin{cases} \alpha, & y=x \\ (\forall y, \beta_t^x) \text{ or } (\exists y, \beta_t^x), & y \ne x \end{cases}$
+
+
+\Def {Substitutability}
+	$\alpha$ is \it{wff}, $x$ is a variable, and $t$ is a term. $t$ is substitutable for $x$ in $\alpha$ if:
+	
+	\bt{(1)} $\alpha$ is atomic
+	
+	\bt{(2)} $\alpha=(\neg\beta)$ and $t$ is substitutable for $x$ in $\beta$ or $\alpha=(\beta \square \gamma)$ and $t$ is substitutable for $x$ in both $\beta$ and $\gamma$
+	
+	\bt{(3)} $\alpha = (\circ y, \beta)$ (where $\circ\in\{\forall, \exists\}$) and $x$ doesn't occur free in $\alpha$
+	
+	\bt{(4)} $\alpha = (\circ y, \beta)$ and $x$ occur free in $\alpha$, $t$ is substitutable for $x$ in $\beta$, and $y$ doesn't occur free in $t$.
+
+Then we can derive $\forall$-quantifier rules as: \infer[\forall\text{-I}] {\forall x, \alpha} {\alpha_y^x} and \infer[\forall\text{-E}] {\alpha_t^x} {\forall x, \alpha} when $y$ doesn't occur free in any undischarged assumption, nor in $\forall x, \alpha$ and $t,y$ are substitutable for $x$ in $\alpha$. With these rules we can prove $\forall x \forall y, \alpha \vdash \forall y \forall x, \alpha$ when $x$ and $y$ are different variables.
+
+Symmetrically, $\exists$-quantifier rules are: \infer[\exists\text{-I}] {\exists x, \alpha} {\alpha_t^x} and \infer[\exists\text{-E}] {\beta} {\exists  x, \alpha & \infer*{\beta}{[\alpha_y^x]}} when $t,y$ is substitutable for $x$ in $\alpha$ and $y$ doesn't freely occur in any undischarged assumption, in $\exists x, \alpha$ or in $\beta$ (notice that the elimination rule indicates that any valid $y$ can lead to $\beta$, i.e. $\forall y, \alpha_y^x \to \beta$ and $\exists x, \alpha$ implies $\beta$).
+
+
+
+
+\subsection{Semantics}
+
+\Def {Structure} (defines predicate symbols, function symbols and constant symbols, but variables are not included) A structure $\mathfrak{A}$ for a first-order language $\mathbb{L}$ consists of
+
+	\bt{(1)} The universe / domain $|\mathfrak{A}|$ as a non-empty set.
+	
+	\bt{(2)} An $n$-ary relation $P^{\mathfrak{A}}$ on $|\mathfrak{A}|$ for each $n$-ary predicate symbol $P$ of $\mathbb{L}$. (But $\dot =$ has only one interpretation $\dot =^{\mathfrak{A}} = \{ (a,b) | a,b \in |\mathfrak{A}| \land a=b\}$)
+	
+	\bt{(3)} An $n$-ary function $f^{\mathfrak{A}}: |\mathfrak{A}|^{n} \to |\mathfrak{A}|$ for each $n$-ary function symbol $f$ of $\mathbb{L}$.
+	
+	\bt{(4)} An element $c^{\mathfrak{A}} \in |\mathfrak{A}|$ for each constant symbol $c$ of $\mathbb{L}$.
+	
+\eg $\mathfrak{N}_1 = \{ \mathbb{N}, <, +, \times, 0, 1\}$ is a structure for $\mathbb{L}$.
+
+\Def {Assignment} An assignment for $\mathfrak{A}$ is a function $s:V \to |\mathfrak{A}|$. Here $V$ is the set of variables.
+
+\Def {Assignment to Terms} An assignment $s$ is extended to $\bar{s}:T\to |\mathfrak{A}|$ where $T$ is the set of terms as: \bt{(1)} $\bar{s}(v)=s(v)$ if $v$ is a variable; \bt{(2)} $\bar{s}(c) = c^\mathfrak{A}$ if $c$ is a constant symbol; \bt{(3)} $\bar{s}(f(t_1,...,t_n)) = f^{\mathfrak{A}}(\bar{s}(t_1),...,\bar{s}(t_n))$ if $f$ is $n$-ary function symbol and $t_1,...,t_n$ are terms.
+
+\Def {Satisfaction}
+	Given first-order language $\mathbb{L}$, structure $\mathfrak{A}$ for $\mathbb{L}$, \it{wff} $\phi$ in $\mathbb{L}$ and assignment $s$ for $\mathfrak{A}$, we define proposition ``$\mathfrak{A}$ satisfies $\phi$ with $s$'' (denoted as $\vDash_{\mathfrak{A}} \phi[s]$).
+	
+	For atomic formula $P(t_1,...,t_n) \ne \dot=$, $\vDash_\mathfrak{A} P(t_1,...,t_n)[s]$ iff. $(\bar{s}(t_1),...,\bar{s}(t_n)) \in P^{\mathfrak{A}}$. ($\vDash_{\mathfrak{A}} \dot=(t_1,t_2)[s]$ iff. $\bar{s}(t_1)=\bar{s}(t_2)$)
+	
+	$\vDash_{\mathfrak{A}} (\alpha \land \beta)[s]$ iff. $\vDash_{\mathfrak{A}} \alpha[s]$ and $\vDash_{\mathfrak{A}} \beta[s]$. (same for other logical connectives)
+	
+	$\vDash_{\mathfrak{A}} (\forall x, \alpha) [s]$ iff. for any $a \in |\mathfrak{A}|$, $\vDash_{\mathfrak{A}} \alpha[s(x|a)]$. (Here $s(x|a)(y)=s(y)$ if $y \ne x$ and $s(x|a)(y)=a$ if $y=x$)
+	
+	$\vDash_{\mathfrak{A}} (\exists x, \alpha) [s]$ iff. there exists $a \in |\mathfrak{A}|$, $\vDash_{\mathfrak{A}} \alpha[s(x|a)]$.
+	
+	\bt{Notation} Suppose $\phi$ is a \it{wff} with all freely occurring variables included in $v_1,...,v_k$, then $\vDash_{\mathfrak{A}} \phi \llbracket a_1, ..., a_k \rrbracket$ means there exists $s$ such that $s(v_i)=a_i$ and $\vDash_{\mathfrak{A}} \phi[s]$.
+
+\Def {Satisfaction for Sentences}
+	If $\sigma$ is a sentence then either $\forall s, \vDash_{\mathfrak{A}} \sigma[s]$ or $\forall s, \not\vDash_{\mathfrak{A}} \sigma[s]$, therefore we write $\vDash_{\mathfrak{A}} \sigma$ and $\not\vDash_{\mathfrak{A}} \sigma$ instead.
+	
+\Def {Validness} $\phi$ is valid iff. $\vDash_{\mathfrak{A}} \phi[s]$ for every structure $\mathfrak{A}$ and every assignment $s$.
+
+\Def {Satisfiability} $\phi$ is satisfiable if there exists structure $\mathfrak{A}$ and assignment $s$ such that $\vDash_{\mathfrak{A}} \phi[s]$.
+
+\Def {Satisfiability of a set of \it{wff}s} $\Gamma$ is satisfiable if there exists $\mathfrak{A}, s$ such that for every $\phi$ in $\Gamma$, $\vDash_{\mathfrak{A}} \phi[s]$.
+
+\Thm {} $\phi$ is not satisfiable iff. $\neg\phi$ is valid.
+
+\Def {Logical Implication}
+	For the set of \it{wff}s $\Sigma$ and \it{wff} $\phi$, we say ``$\Sigma$ logically implies $\phi$'' (denoted by $\Sigma \vDash \phi$) if for every $\mathfrak{A}$ and every assignment $s$, $\left( \vDash_{\mathfrak{A}} \Sigma[s] \right) \to \left( \vDash_{\mathfrak{A}} \phi[s] \right)$.
+	
+\Thm {}
+	For set of sentences $\Sigma$ and sentence $\sigma$, $\Sigma \vDash \sigma$ iff. every model of $\Sigma$ is a model of $\sigma$.
+	
+\Def {Logical Equivalence}
+	$\alpha$ and $\beta$ are logically equivalent iff. $\{\alpha\} \vDash \beta$ and $\{\beta\} \vDash \alpha$.
+
+
+
+
+\subsubsection{Models and Definable Relations}
+
+An idea: \it{wff}s are filters.
+
+Because sentences are used to describe properties of structures, they can be used to distinguish structures when the language has enough expression capability. Specifically, when we are defining something in mathematics, we are talking about structures for some certain language satisfying some sentences, or the models of such sentences. In this case, \it{wff}s filters structures.
+
+Meanwhile, naturally, \it{wff}s with freely occurring variables are used to describe a subset of a given set, but there are only countable \it{wff}s, so there are only countable subsets definable. In this case, \it{wff}s filters variables.
+
+\Def {Elementary Equivalence}
+
+	$\mathfrak{A}$ and $\mathfrak{B}$ are structures for the same language $\mathbb{L}$. $\mathfrak{A} \equiv \mathfrak{B}$ if for every sentence $\sigma$ of $\mathbb{L}$, $\vDash_{\mathfrak{A}} \sigma \Leftrightarrow \vDash_{\mathfrak{B}} \sigma$.
+	
+	\textcolor{gray}{\eg Given a language with $\dot 0$ and $\dot <$, we know $\mathfrak{N} \not\equiv \mathfrak{Z}$, $\mathfrak{Z} \not\equiv \mathfrak{Q}$, and $\mathfrak{Z} \not\equiv \mathfrak{R}$ where $\mathfrak{N}, \mathfrak{Z}, \mathfrak{Q}, \mathfrak{R}$ are structures with universe $\mathbb{N}, \mathbb{Z}, \mathbb{Q}, \mathbb{R}$ and only one $2$-ary predicate symbol $<$, but $\mathfrak{Q}$ and $\mathfrak{R}$ can't be told apart unless we introduce two $2$-ary function symbol into language $\mathbb{L}$ and interpret them as plus and multiplication (then we have $\exists x, x \dot\times x \dot= \dot1 \dot+ \dot1$ distinguishing these two structures).}
+
+\Def {Models}
+	$\mathfrak{A}$ is a model of sentence $\sigma$ if $\vDash_{\mathfrak{A}} \sigma$ if $\sigma$ is true in $\mathfrak{A}$; ... a set of sentences $\Sigma$ if every sentence in $\Sigma$ is true in $\mathfrak{A}$.
+	
+\Def {Symmetric, Transitive, Reflexive, Trichotomy}
+	For binary relation $R$, $R$ is symmetric if $aRb$ implies $bRa$; ...; $R$ satisfies trichotomy if exactly one among $aRb$, $bRa$ and $a=b$ is true.
+	
+\Def {Linear Ordering}
+	Binary relation $R$ is a linear ordering on $A$ if $R$ is transitive and satisfies trichotomy on $A$.
+
+\Def {Transitive and Linear Ordered Structure}
+	Suppose language $\mathbb{L}$ has only binary relation symbol $\dot R$ and $\dot =$, structure $\mathfrak{A}=(|\mathfrak{A}|, \dot R^{\mathfrak{A}})=(A,R)$. $\mathfrak{A}$ is transitive if $R$ is transitive; $\mathfrak{A}$ is linearly ordered if $R$ is linear ordering on $A$.
+	
+	Sentences correspond to properties of structures by: \eg $\mathfrak{A}$ is transitive iff. $\vDash_{\mathfrak{A}} \sigma$ where $\sigma=\forall x \forall y \forall z, xRy \to yRz \to xRz$.
+	
+\Def {Relation Defined by \it{wff} in a Structure}
+	Given $\mathfrak{A}$ and $\phi$ with freely occurring variables $v_1,...,v_n$, then the $n$-ary relation defined by $\phi$ in $\mathfrak{A}$ is $\{ (a_1,...,a_n) | \vDash_{\mathfrak{A}} \phi \llbracket a_1,...,a_n \rrbracket \}$.
+	
+	\eg $\mathfrak{R}=\{ \mathbb{R}, <, +, \times, 0, 1\}$, relation $\{a\in\mathbb{R}|0 \le a\}$ is defined by $\exists v_2, v_1 \dot= v_2 \times v_2$.
+
+\Def {Definable Relation}
+	$R$ is definable in structure $\mathfrak{A}$ if there exists $\phi$ defining it in $\mathfrak{A}$.
+	
+	For any structure $\mathfrak{A}$ for $\mathbb{L}$, relations $|\mathfrak{A}|, \varnothing, =$, any predicate $\dot P^{\mathfrak{A}}$, any function $f^{\mathfrak{A}}$, and any constant singleton $\{c^{\mathfrak{A}}\}$ are definable.
+
+\Lemma {} Given structure $\mathfrak{A}$, the set of definable relations is enumerable. (Therefore not every subset of $\mathbb{N}$ is definable)
+
+
+
+\subsubsection{Homomorphisms, Isomorphisms, and Automorphisms}
+
+Another idea: satisfactions of \it{wff} $\phi$ in different structures can be related.
+
+\Def {Homomorphism}
+	Let $\mathfrak{A}$ and $\mathfrak{B}$ be structures for $\mathbb{L}$, then a homomorphism from $\mathfrak{A}$ to $\mathfrak{B}$ is a function $h:|\mathfrak{A}|\to|\mathfrak{B}|$ such that:
+	
+	\bt{(1)} For every $n$-ary predicate symbol $R$ except $\dot =$, $(a_1,...,a_n)\in R^{\mathfrak{A}} \Leftrightarrow (h(a_1),...,h(a_n)) \in R^{\mathfrak{B}}$.
+	
+	\bt{(2)} For every $n$-ary function symbol $f$, $h(f^{\mathfrak{A}}(a_1,...,a_n))=f^{\mathfrak{B}}(h(a_1),...,h(a_n))$.
+	
+	\bt{(3)} For every constant symbol $c$, $h(c^{\mathfrak{A}})=c^{\mathfrak{B}}$.
+
+\Def {Isomorphism}
+	A homomorphism $h$ from $\mathfrak{A}$ into $\mathfrak{B}$ is isomorphism if $h$ is one-to-one.
+
+\Def {Isomorphic Structure}
+	$\mathfrak{A}$ and $\mathfrak{B}$ are isomorphic ($\mathfrak{A} \cong \mathfrak{B}$) if there exists isomorphism of $\mathfrak{A}$ onto $\mathfrak{B}$.
+	
+\Def {Automorphism}
+	An automorphism of $\mathfrak{A}$ is isomorphism of $\mathfrak{A}$ onto $\mathfrak{A}$.
+
+\eg There is only one automorphism of $\mathfrak{N}=\{ \mathbb{N}, < \}$, the identity function. However, there are many automorphisms of $\mathfrak{R}=\{ \mathbb{R}, < \}$, $\mathfrak{Z}=\{ \mathbb{Z}, < \}$, etc.
+
+\Def {Substructure}
+	$\mathfrak{A}=\{A,...\}$ and $\mathfrak{B}=\{B,...\}$ are structures for $\mathbb{L}$. $\mathfrak{A}$ is a substructure of $\mathfrak{B}$ if $A \subseteq B$ and
+	
+	\bt{(1)} $P^{\mathfrak{A}}=P^{\mathfrak{B}} \cap A^{k}$ for any $k$-ary predicate symbol $P$;
+	
+	\bt{(2)} $f^{\mathfrak{A}}(a_1,...,a_k) = f^{\mathfrak{B}}(a_1,...,a_k)$ for every $k$-ary function symbol $f$ and $(a_1,...,a_k)\in A^k$;
+	
+	\bt{(3)} $c^{\mathfrak{A}}=c^{\mathfrak{B}}$ for every constant symbol $c$.
+
+\Thm {Homomorphism Theorem}
+	For homomorphism $h$ of $\mathfrak{A}$ into $\mathfrak{B}$ and assignment $s$ for $\mathfrak{A}$, $\vDash_{\mathfrak{A}} \phi[s]$ iff. $\vDash_{\mathfrak{B}} \phi[h\circ s]$ when
+	
+	\bt{(1)} $\phi$ is quantifier-free \it{wff} without $\dot=$;
+	
+	\bt{(2)} $\phi$ is quantifier-free \it{wff} and $h$ is bijective;
+	
+	\bt{(3)} $\phi$ is \it{wff} without $\dot=$ and $h$ is surjective.
+	
+\Proof
+
+\Lemma {} With given condition, $h(\bar{s}(t)) = \overline{h\circ s}(t)$ for any term $t$. (Proven by induction on $t$)
+
+	The one-to-one plus quantifier-free condition is the most trivial one. For atomic $\phi=P(t_1,...,t_k)$ (including ``$=$''),
+	\begin{align*}
+		\vDash_{\mathfrak{A}} P(t_1,...,t_k)[s]
+		\bm{\Leftrightarrow} (\bar{s}(t_1),...,\bar{s}(t_k)) \in P^{\mathfrak{A}}
+		\bm{\Leftrightarrow} (h(\bar{s}(t_1)),...,h(\bar{s}(t_k))) \in P^{\mathfrak{B}}
+		\bm{\Leftrightarrow} \vDash_{\mathfrak{B}} P(t_1,...,t_k)[h\circ s]
+	\end{align*}
+	Then applying induction on logical connectives leads to the conclusion.
+	(Note that such proof naturally holds for quantifier-free plus no equality condition, therefore we only have to introduce quantifiers with the $h$-surjective condition in the induction step)
+	
+	With \bt{(1)} for every $a$, $\vDash_{\mathfrak{A}} \phi[s(x|a)]$; \bt{(2)} for every $b$, $\vDash_{\mathfrak{B}} \phi[(h\circ s)(x|b)]$, we have to prove \bt{(1)} $\Leftrightarrow$ \bt{(2)}.
+	
+	\bt{(2)} $\Rightarrow$ \bt{(1)}: for any given $a$, let $b=h(a)$, then
+	\begin{align*}
+		\vDash_{\mathfrak{B}} \phi[(h\circ s)(x|b)]
+		\bm{\Leftrightarrow} \vDash_{\mathfrak{B}} \phi[h\circ (s(x|a))]
+		\bm{\Leftrightarrow} \vDash_{\mathfrak{A}} \phi[s(x|a)]
+	\end{align*}
+	where the last equivalence holds due to the induction hypothesis.
+	
+	\bt{(1)} $\Rightarrow$ \bt{(2)}: for any given $b$, since $h$ is surjective, there exists $a$ s.t. $h(a)=b$. Then the above proof holds. (Proof for $\exists$ is similar)
+	
+\QED
+
+\Corollary {} If $\mathfrak{A} \cong \mathfrak{B}$, then $\mathfrak{A} \equiv \mathfrak{B}$. (The converse is not true)
+
+\Corollary {Automorphism Theorem} For automorphism $h$ of $\mathfrak{A}$, let $R$ be $n$-ary definable relation. For every $(a_1,...,a_n)\in |\mathfrak{A}|^n$, $(a_1,...,a_n) \in R$ iff. $(h(a_1),...,h(a_n)) \in R$.
+
+
+
+\subsection{Soundness and Completeness}
+
+\Thm {Soundness of First-Order Logic}
+	Every provable \it{wff} is valid, or $\vdash \phi$ implies $\vDash \phi$. More generally, $\Sigma \vdash \alpha$ implies $\Sigma \vDash \alpha$.
+	
+Prove soundness based on induction on proof trees, where substitution lemma helps quantifier rules.
+	
+\Lemma {Substitution Lemma}
+	Given language $\mathbb{L}$, structure $\mathfrak{A}$ and assignment $s$, $\displaystyle \bar{s}(u_t^x) = \overline{s \left( x | \overline{s}(t) \right)} (u)$, and thus when $t$ is substitutable for $x$ in $\alpha$, $\left( \vDash_{\mathfrak{A}} \alpha_t^x [s] \right) \Leftrightarrow \left( \vDash_{\mathfrak{A}} \alpha \left[ s(x|\overline{s}(t))\right] \right)$.
+
+\Proof
+	In the base case where $\alpha=P(t_1,...,t_n)$.
+	\begin{align*}
+		\vDash_{\mathfrak{A}} \alpha_t^x[s]
+		\Leftrightarrow & \vDash_{\mathfrak{A}} P \left( {t_1}_t^x, {t_2}_t^x, ..., {t_n}_t^x \right)[s]
+		\Leftrightarrow \left( \overline{s}\left( {t_1}_t^x \right), ..., \overline{s}\left( {t_n}_t^x \right) \right) \in P^{\mathfrak{A}}
+		\Leftrightarrow \left( \overline{s'}(t_1), ..., \overline{s'}(t_1) \right) \in P^{\mathfrak{A}}
+		\Leftrightarrow \vDash_{\mathfrak{A}} P \left( {t_1}, {t_2}, ..., {t_n} \right) [s']
+	\end{align*}
+	
+	In inductive case, let $\alpha=\forall y \phi$, where $x\ne y$ and $t$ is substitutable for $x$ in $\phi$, then
+	\begin{align*}
+		\vDash_{\mathfrak{A}} \forall y, \phi_t^x[s]
+		\Leftrightarrow & \text{ For any $a$ in $|\mathfrak{A}|$, } \vDash_{\mathfrak{A}} \phi_t^x[s(y|a)]
+		\Leftrightarrow \text{ For any $a$, } \vDash_{\mathfrak{A}} \phi [s(y|a)(x|\overline{s(y|a)}(t))]
+		\\
+		\Leftrightarrow & \text{ For any $a$, } \vDash_{\mathfrak{A}} \phi [s(x|\overline{s}(t))(y|a)]
+		\Leftrightarrow \vDash_{\mathfrak{A}} \forall y, \phi[s(x|\overline{s}(t))]
+	\end{align*}
+\QED
+
+\Corollary {}
+	If $\vdash \phi \leftrightarrow \psi$ then $\phi$ and $\psi$ are logically equivalent.
+	
+\Def {Consistency}
+	$\Sigma$ is inconsistent if exists $\alpha$ s.t. $\Sigma \vdash \alpha$ and $\Sigma \vdash \neg\alpha$. $\Sigma$ is consistent if it is not inconsistent. 
+	
+	Propositions: \bt{(1)} $\forall \beta$, $\Sigma \vdash \beta$ if $\Sigma$ is inconsistent. \bt{(2)} If $\Sigma$ is consistent, then $\Sigma; \alpha$ or $\Sigma; \neg\alpha$ is consistent. \bt{(3)} $\Sigma \vdash \alpha$ iff. $\Sigma; \neg\alpha$ is inconsistent.
+	
+\Thm {Relationship between soundness and consistency}
+	\bt{(1)} If $\Sigma$ is satisfiable then $\Sigma$ is consistent. \bt{(2)} $\Sigma \vdash \alpha$ implies $\Sigma \vDash \alpha$. \bt{(1)} and \bt{(2)} are equivalent.
+	
+\Thm {Completeness of First-Order Logic}
+	Every valid \it{wff} is provable, or $\vDash \phi$ implies $\vdash \phi$.
+	
+\Thm {Relationship between completeness and consistency}
+	\bt{(1)} If $\Sigma$ is consistent then $\Sigma$ is satisfiable. \bt{(2)} $\Sigma \vDash \alpha$ implies $\Sigma \vdash \alpha$. \bt{(1)} and \bt{(2)} are equivalent.
+	
+\Proof
+	\bt{(2) $\Rightarrow$ (1)} Assume $\Sigma$ unsat and consistent. Let $\Sigma=\Sigma';\alpha$, then $\Sigma'\vDash \neg\alpha$, $\Sigma'\vdash \neg\alpha$, (weakening) $\Sigma \vdash \neg\alpha$ and since $\alpha \in \Sigma$, $\Sigma \vdash \alpha$. $\Sigma$ is inconsistent.
+	
+\end{document}
