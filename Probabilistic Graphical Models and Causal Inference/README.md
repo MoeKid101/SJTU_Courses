@@ -1,0 +1,3 @@
+This pdf file is my notes for **causal inference** (reference: *Causal Inference in Statistics: a Primer* by Pearl) with conclusions proved using the language of **probabilistic graphical models** (reference: *Probabilistic Graphical Models: Principles and Techniques* by Koller).
+
+The textbook by Pearl listed conclusions and gave intuitions, sacrificing the rigor of mathematics. By contrast, Koller described all probabilistic models in the book with well-defined mathematical definitions and theorems, which might be helpful to those who want to understand mathematical principles behind causal inference.
